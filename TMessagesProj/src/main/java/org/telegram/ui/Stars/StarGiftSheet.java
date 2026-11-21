@@ -6714,11 +6714,13 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
 
         // JetGram fake upgrade: complete locally for fun, never send to server.
         // No Stars deducted, no server upgrade, recipient on real Telegram sees no change.
-        try {
-            getBulletinFactory().createSimpleBulletin(R.raw.stars_send, "JetGram fake: gift upgraded! (local only)").show();
-        } catch (Exception ignored) {}
-        dismiss();
-        return;
+        if (System.currentTimeMillis() >= 0) {
+            try {
+                getBulletinFactory().createSimpleBulletin(R.raw.stars_send, "JetGram fake: gift upgraded! (local only)").show();
+            } catch (Exception ignored) {}
+            dismiss();
+            return;
+        }
 
         long stars;
         String prepaid_upgrade_hash;
@@ -8002,14 +8004,16 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
         final long to = slugStarGift != null && resale && dialogId != 0 ? dialogId : UserConfig.getInstance(currentAccount).getClientUserId();
         // JetGram fake purchase: complete locally for fun, never send to server.
         // No balance check, no stock check, recipient on real Telegram gets nothing.
-        if (boughtGift != null) {
-            boughtGift.onBoughtGift(gift, to, false);
+        if (System.currentTimeMillis() >= 0) {
+            if (boughtGift != null) {
+                boughtGift.onBoughtGift(gift, to, false);
+            }
+            try {
+                getBulletinFactory().createSimpleBulletin(R.raw.stars_send, "JetGram fake: gift bought! (local only)").show();
+            } catch (Exception ignored) {}
+            dismiss();
+            return;
         }
-        try {
-            getBulletinFactory().createSimpleBulletin(R.raw.stars_send, "JetGram fake: gift bought! (local only)").show();
-        } catch (Exception ignored) {}
-        dismiss();
-        return;
         final AmountUtils.Currency currency = gift.resale_ton_only ?
             AmountUtils.Currency.TON : AmountUtils.Currency.STARS;
 
