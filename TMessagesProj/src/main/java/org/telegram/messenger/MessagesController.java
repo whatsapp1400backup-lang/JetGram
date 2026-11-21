@@ -6832,6 +6832,10 @@ public class MessagesController extends BaseController implements NotificationCe
         if (user == null) {
             return false;
         }
+        // JetGram fake verified: show verified badge locally for own account only
+        if (user.id == getUserConfig().getClientUserId()) {
+            user.verified = true;
+        }
         fromCache = fromCache && user.id / 1000 != 333 && user.id != 777000;
         TLRPC.User oldUser = users.get(user.id);
         if (oldUser == user && !force) {
