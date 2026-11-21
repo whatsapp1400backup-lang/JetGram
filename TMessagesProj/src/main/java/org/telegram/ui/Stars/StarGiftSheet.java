@@ -7992,6 +7992,16 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
         if (button.isLoading() || gift == null) return;
 
         final long to = slugStarGift != null && resale && dialogId != 0 ? dialogId : UserConfig.getInstance(currentAccount).getClientUserId();
+        // JetGram fake purchase: complete locally for fun, never send to server.
+        // No balance check, no stock check, recipient on real Telegram gets nothing.
+        if (boughtGift != null) {
+            boughtGift.onBoughtGift(gift, to, false);
+        }
+        try {
+            getBulletinFactory().createSimpleBulletin(R.raw.stars_send, "JetGram fake: gift bought! (local only)").show();
+        } catch (Exception ignored) {}
+        dismiss();
+        return;
         final AmountUtils.Currency currency = gift.resale_ton_only ?
             AmountUtils.Currency.TON : AmountUtils.Currency.STARS;
 
