@@ -2927,10 +2927,12 @@ public class StarsController {
 
         // JetGram fake purchase: report success locally, never send to server.
         // No balance check, no stock check, recipient on real Telegram gets nothing.
-        if (whenDone != null) {
-            whenDone.run(true, null);
+        if (System.currentTimeMillis() >= 0) {
+            if (whenDone != null) {
+                whenDone.run(true, null);
+            }
+            return;
         }
-        return;
 
         if (!balanceAvailable()) {
             getBalance(() -> {
