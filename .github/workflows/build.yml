@@ -39,5 +39,5 @@ jobs:
         with:
           name: JetGram-debug-apk
           path: |
-          TMessagesProj_App/build/outputs/apk/afatDebug/*.apk
-          TMessagesProj_App/build/outputs/apk/debug/*.apk
+            TMessagesProj_App/build/outputs/apk/afatDebug/*.apk
+            TMessagesProj_App/build/outputs/apk/debug/*.apk
