@@ -573,11 +573,12 @@ public class UserConfig extends BaseController {
     }
 
     public boolean isPremium() {
+        // JetGram fake premium: unlock premium UI for all JetGram users
         TLRPC.User user = currentUser;
         if (user == null) {
             return false;
         }
-        return user.premium;
+        return true;
     }
 
     public Long getEmojiStatus() {
