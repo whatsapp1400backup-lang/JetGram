@@ -2264,6 +2264,21 @@ public class StarsController {
         loadStarGifts();
     }
 
+    // JetGram fake gift unlock: show all gifts as available locally only.
+    // Actual purchase still goes through Telegram server and will fail if sold out.
+    private void applyJetGramGiftUnlock(java.util.List<TL_stars.StarGift> list) {
+        if (list == null) return;
+        for (TL_stars.StarGift g : list) {
+            if (g == null) continue;
+            g.sold_out = false;
+            g.require_premium = false;
+            g.locked_until_date = 0;
+            if (g.availability_total > 0 && g.availability_remains <= 0) {
+                g.availability_remains = g.availability_total;
+            }
+        }
+    }
+
     public void loadStarGifts() {
         if (giftsLoading || giftsLoaded && (System.currentTimeMillis() - giftsRemoteTime) < 1000 * 60) return;
         giftsLoading = true;
@@ -2276,6 +2291,7 @@ public class StarsController {
                 giftsCacheLoaded = true;
                 gifts.clear();
                 gifts.addAll(giftsCached);
+                applyJetGramGiftUnlock(gifts);
                 birthdaySortedGifts.clear();
                 birthdaySortedGifts.addAll(gifts);
                 Collections.sort(birthdaySortedGifts, Comparator.comparingInt((TL_stars.StarGift a) -> (a.sold_out ? 1 : 0)).thenComparingInt((TL_stars.StarGift a) -> (a.birthday ? -1 : 0)));
@@ -2300,6 +2316,7 @@ public class StarsController {
                     MessagesStorage.getInstance(currentAccount).putUsersAndChats(res.users, res.chats, true, true);
                     gifts.clear();
                     gifts.addAll(res.gifts);
+                    applyJetGramGiftUnlock(gifts);
                     birthdaySortedGifts.clear();
                     birthdaySortedGifts.addAll(gifts);
                     Collections.sort(birthdaySortedGifts, Comparator.comparingInt((TL_stars.StarGift a) -> (a.sold_out ? 1 : 0)).thenComparingInt((TL_stars.StarGift a) -> (a.birthday ? -1 : 0)));
