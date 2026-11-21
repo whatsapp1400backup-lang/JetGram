@@ -6712,6 +6712,14 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
     private void doUpgrade() {
         if (button.isLoading()) return;
 
+        // JetGram fake upgrade: complete locally for fun, never send to server.
+        // No Stars deducted, no server upgrade, recipient on real Telegram sees no change.
+        try {
+            getBulletinFactory().createSimpleBulletin(R.raw.stars_send, "JetGram fake: gift upgraded! (local only)").show();
+        } catch (Exception ignored) {}
+        dismiss();
+        return;
+
         long stars;
         String prepaid_upgrade_hash;
         final TL_stars.InputSavedStarGift inputStarGift = getInputStarGift();

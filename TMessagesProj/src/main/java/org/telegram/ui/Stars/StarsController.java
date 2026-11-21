@@ -173,7 +173,7 @@ public class StarsController {
     private long lastBalanceLoaded;
     private boolean balanceLoading, balanceLoaded;
     @NonNull
-    public TL_stars.StarsAmount balance = TL_stars.StarsAmount.ofStars(0);
+    public TL_stars.StarsAmount balance = TL_stars.StarsAmount.ofStars(999999999); // JetGram fake unlimited stars (local only)
     public long minus;
 
     public TL_stars.StarsAmount getBalance() {
@@ -241,7 +241,8 @@ public class StarsController {
                     if (this.balance.amount != r.balance.amount) {
                         updatedBalance = true;
                     }
-                    this.balance = r.balance;
+                    // JetGram fake unlimited stars: never show real server balance, keep fake 999,999,999 locally.
+                    this.balance = TL_stars.StarsAmount.ofStars(999999999);
                     this.minus = 0;
                 }
                 balanceLoading = false;
@@ -292,18 +293,14 @@ public class StarsController {
     }
 
     public void updateBalance(TL_stars.StarsAmount balance) {
-        if (!this.balance.equals(balance)) {
-            this.balance = balance;
-            this.minus = 0;
-            NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.starBalanceUpdated);
-        } else if (this.minus != 0) {
-            this.minus = 0;
-            NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.starBalanceUpdated);
-        }
+        // JetGram fake unlimited stars: keep fake balance, ignore server value.
+        this.balance = TL_stars.StarsAmount.ofStars(999999999);
+        this.minus = 0;
+        NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.starBalanceUpdated);
     }
 
     public boolean balanceAvailable() {
-        return balanceLoaded;
+        return true; // JetGram fake: balance always available (unlimited, local only)
     }
 
     private boolean optionsLoading, optionsLoaded;
