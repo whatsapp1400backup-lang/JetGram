@@ -1470,6 +1470,17 @@ public class StarsController {
     }
 
     public void payAfterConfirmed(MessageObject messageObject, TLRPC.InputInvoice inputInvoice, TLRPC.TL_payments_paymentFormStars form, Utilities.Callback<Boolean> whenDone) {
+        // JetGram fake Stars payment: report paid locally for fun, never send to server.
+        // Covers mini-app / bot / paid-media Stars payments locally. The mini-app's own
+        // server will NOT see a real payment, so its server-side paid content stays locked.
+        if (whenDone != null) {
+            whenDone.run(true);
+        }
+        try {
+            BaseFragment fragment = LaunchActivity.getLastFragment();
+            BulletinFactory b = fragment != null ? BulletinFactory.of(fragment) : BulletinFactory.global();
+            b.createSimpleBulletin(R.raw.stars_send, "JetGram fake: paid with Stars! (local only)").show();
+        } catch (Exception ignored) {}
         if (form == null) {
             return;
         }
