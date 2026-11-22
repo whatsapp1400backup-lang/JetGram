@@ -34,10 +34,14 @@ jobs:
           chmod +x gradlew
           ./gradlew :TMessagesProj_App:assembleDebug --stacktrace
 
+      - name: List built APKs
+        run: |
+          find TMessagesProj_App/build/outputs -name "*.apk" -ls || true
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: JetGram-debug-apk
+          if-no-files-found: error
           path: |
-            TMessagesProj_App/build/outputs/apk/afatDebug/*.apk
-            TMessagesProj_App/build/outputs/apk/debug/*.apk
+            TMessagesProj_App/build/outputs/apk/**/*.apk
